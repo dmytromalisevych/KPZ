@@ -29,6 +29,7 @@ class FieldVM : VMBase
         FlagCmd = new RelayCommand(flag, canFlag);
 
         bool[,] mines = new bool[BOARD_SIZE, BOARD_SIZE];
+        Random random = new Random();
         for (int i = 0; i < BOARD_SIZE; i++)
         {
             for (int j = 0; j < BOARD_SIZE; j++)
@@ -136,24 +137,24 @@ class FieldVM : VMBase
     private void reveal(object? param)
     {
         var cell = param as CellVM;
-        RevealedMines++;
         cell.IsRevealed = true;
+        RevealedMines++;
+        
         if (cell.IsMine) IsGameOver = true;
 
-        /* Buggy, Buggy
         if (cell.NeighbourMines == 0) 
         {
             for (int i = cell.Y - 1; i <= cell.Y + 1; i++)
             {
                 for (int j = cell.X - 1; j <= cell.X + 1; j++)
                 {
-                    if (!check(j, i)) continue;
-                    //var neighbour = Field[i][j];
-                    if (canReveal(Field[i][j])) reveal(Field[i][j]);
+                  if (!check(j, i)) continue;
+                  var neighbour = Field[i][j];
+                  if (i == cell.Y && j == cell.X) continue;
+                  if (canReveal(neighbour)) reveal(neighbour);
                 }
             }
         }
-        */
     }
     private bool canReveal(object? param)
     {
