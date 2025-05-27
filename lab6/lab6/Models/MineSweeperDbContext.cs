@@ -13,7 +13,7 @@ public class MineSweeperDbContext : DbContext
     public DbSet<User> Users => Set<User>();
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer("Server=(localdb)\\mssqllocaldb;Database=MinesweeperDb;Trusted_Connection=True;");
+    optionsBuilder.UseSqlServer(ConfigurationManager.ConnectionStrings["MinesweeperDb"].ConnectionString);
     }
 
     private MineSweeperDbContext() : base() { }
@@ -22,10 +22,19 @@ public class MineSweeperDbContext : DbContext
     { 
         get
         {
-            instance ??= new();
-            return instance;
+            if (instance == null)
+        {
+            try
+            {
+                instance = new();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error connecting to database: {ex.Message}");
+            }
+        }
+        return instance;
         } 
     }
     private static MineSweeperDbContext? instance;
-
 }
